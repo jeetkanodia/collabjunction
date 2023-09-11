@@ -4,7 +4,7 @@ import prisma from "../../../helpers/prismadb";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-
+import bcrypt from "bcrypt";
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -24,7 +24,33 @@ export const authOptions = {
         },
       },
       async authorize(credentials) {
-        const user = { id: 1, name: "John Doe", email: "sxy@gmail.com" };
+        // check to see email and pass is there
+
+        if (!credentials.email || !credentials.password) {
+          throw new Error("Please enter email and password");
+        }
+
+        // check to see if user exists
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
+
+        // if no user found
+        if (!user || !user?.hashedPassword) {
+          throw new Error("No user found");
+        }
+
+        // check to see if password matches
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword
+        );
+        if (!passwordMatch) {
+          throw new Error("Incorrect password");
+        }
+
         return user;
       },
     }),
