@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -10,8 +11,8 @@ export default function Register() {
     e.preventDefault();
     axios
       .post("/api/register", data)
-      .then(() => alert("User registered successfully"))
-      .catch(() => alert("error occured"));
+      .then(() => toast.success("User registered successfully"))
+      .catch(() => toast.error("Error registering user"));
   };
 
   return (

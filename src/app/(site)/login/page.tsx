@@ -1,15 +1,22 @@
 "use client";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [data, setData] = useState({ email: "", password: "" });
 
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signIn("credentials", { ...data, redirect: false }).then(() =>
-      alert("Logged in!")
-    );
+    signIn("credentials", { ...data, redirect: false }).then((callback) => {
+      if (callback?.error) {
+        toast.error(callback.error);
+      }
+
+      if (callback?.ok && !callback?.error) {
+        toast.success("User logged in successfully");
+      }
+    });
   };
   return (
     <>
@@ -82,6 +89,14 @@ export default function Login() {
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign in
+              </button>
+            </div>
+            <div>
+              <button
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => signIn("google")}
+              >
+                Sign in with Google
               </button>
             </div>
           </form>
