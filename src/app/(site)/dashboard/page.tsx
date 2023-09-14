@@ -3,6 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 const Dashboard = () => {
   const { data: session } = useSession();
+
   return (
     <div>
       <h1>DASHBOARD</h1>

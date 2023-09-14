@@ -1,47 +1,34 @@
 "use client";
+import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
+import { useSession } from "next-auth/react";
 export default function StudentForm() {
   const router = useRouter();
-
+  const { data: session } = useSession();
   const [data, setData] = useState({
     category: "",
-    CollegeName: "",
-    Address: "",
-    Website: "",
-    SocialHandles: "",
-    Name: "",
-    ContactNumber: "",
-    OfficialEmail: "",
-    // AlternateEmail: "",
-    Feedback: "",
+    collegeName: "",
+    address: "",
+    website: "",
+    socialHandles: "",
+    name: "",
+    contactNumber: "",
+    officialEmail: "",
+    alternateEmail: "",
+    feedback: "",
   });
 
-  const createStudent = async (e:React.FormEvent<HTMLFormElement>) => {
+  const createStudent = async (e: React.FormEvent<HTMLFormElement>) => {
+    data.officialEmail = session?.user?.email!;
+    data.name = session?.user?.name!;
     e.preventDefault();
 
-    try {
-      const response = await fetch("/api/create-student", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        toast.success("Student record created successfully");
-        router.push("/dashboard"); // Redirect to dashboard after successful submission
-      } else {
-        const errorMessage = await response.text();
-        toast.error(errorMessage);
-      }
-    } catch (error) {
-      console.error("Error creating student record:", error);
-      toast.error("An error occurred ");
-    }
+    axios
+      .post("/api/createstudent", data)
+      .then(() => toast.success("Student Form filled successfully"))
+      .catch((e) => toast.error(e));
   };
 
   return (
@@ -56,7 +43,7 @@ export default function StudentForm() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={createStudent}>
             <div>
-            <label
+              <label
                 htmlFor="category"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
@@ -67,10 +54,11 @@ export default function StudentForm() {
                   id="category"
                   name="category"
                   type="text"
-                  autoComplete="category"
                   required
                   value={data.category}
-                  onChange={(e) => setData({ ...data, category: e.target.value })}
+                  onChange={(e) =>
+                    setData({ ...data, category: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -85,10 +73,11 @@ export default function StudentForm() {
                   id="CollegeName"
                   name="CollegeName"
                   type="text"
-                  autoComplete="CollegeName"
                   required
-                  value={data.CollegeName}
-                  onChange={(e) => setData({ ...data,CollegeName: e.target.value })}
+                  value={data.collegeName}
+                  onChange={(e) =>
+                    setData({ ...data, collegeName: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -103,10 +92,12 @@ export default function StudentForm() {
                   id="Address"
                   name="Address"
                   type="text"
-                  autoComplete="Address"
+                  autoComplete="address"
                   required
-                  value={data.Address}
-                  onChange={(e) => setData({ ...data, Address: e.target.value })}
+                  value={data.address}
+                  onChange={(e) =>
+                    setData({ ...data, address: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -114,22 +105,21 @@ export default function StudentForm() {
                 htmlFor="Website"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Website
+                Website Link
               </label>
               <div className="mt-2">
                 <input
                   id="Website"
                   name="Website"
                   type="text"
-                  autoComplete="Website"
-                  required
-                  value={data.Website}
-                  onChange={(e) => setData({ ...data, Website: e.target.value })}
+                  value={data.website}
+                  onChange={(e) =>
+                    setData({ ...data, website: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
 
-              
               <label
                 htmlFor="SocialHandles"
                 className="block text-sm font-medium leading-6 text-gray-900"
@@ -141,33 +131,13 @@ export default function StudentForm() {
                   id="SocialHandles"
                   name="SocialHandles"
                   type="text"
-                  autoComplete="SocialHandles"
-                  required
-                  value={data.SocialHandles}
-                  onChange={(e) => setData({ ...data, SocialHandles: e.target.value })}
+                  value={data.socialHandles}
+                  onChange={(e) =>
+                    setData({ ...data, socialHandles: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
-              
-              <label
-                htmlFor="Name"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="Name"
-                  name="Name"
-                  type="text"
-                  autoComplete="Name"
-                  required
-                  value={data.category}
-                  onChange={(e) => setData({ ...data, Name: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-              
               <label
                 htmlFor="ContactNumber"
                 className="block text-sm font-medium leading-6 text-gray-900"
@@ -179,33 +149,34 @@ export default function StudentForm() {
                   id="ContactNumber"
                   name="ContactNumber"
                   type="ContactNumber"
-                  autoComplete="ContactNumber"
                   required
-                  value={data.ContactNumber}
-                  onChange={(e) => setData({ ...data, ContactNumber: e.target.value })}
+                  value={data.contactNumber}
+                  onChange={(e) =>
+                    setData({ ...data, contactNumber: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
-              
+
               <label
-                htmlFor="OfficialEmail"
+                htmlFor="alrenateEmail"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                OfficialEmail
+                Alternate Email
               </label>
               <div className="mt-2">
                 <input
-                  id="OfficialEmail"
-                  name="OfficialEmail"
+                  id="alrenateEmail"
+                  name="alternateEmail"
                   type="text"
-                  autoComplete="OfficialEmail"
-                  required
-                  value={data.OfficialEmail}
-                  onChange={(e) => setData({ ...data, OfficialEmail: e.target.value })}
+                  autoComplete="email"
+                  value={data.alternateEmail}
+                  onChange={(e) =>
+                    setData({ ...data, alternateEmail: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
-              
               <label
                 htmlFor="Feedback"
                 className="block text-sm font-medium leading-6 text-gray-900"
@@ -217,20 +188,16 @@ export default function StudentForm() {
                   id="Feedback"
                   name="Feedback"
                   type="text"
-                  autoComplete="Feedback"
                   required
-                  value={data.Feedback}
-                  onChange={(e) => setData({ ...data, Feedback: e.target.value })}
+                  value={data.feedback}
+                  onChange={(e) =>
+                    setData({ ...data, feedback: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
-
-
-
             </div>
-            
-          
-            
+
             <div>
               <button
                 type="submit"

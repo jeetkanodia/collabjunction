@@ -69,13 +69,13 @@ generator client {
      Website        String? 
      SocialHandles  String? 
      Name           String 
-     ContactNumber  String 
-     OfficialEmail  String 
+     ContactNumber  String  @unique
+     OfficialEmail  String  @unique
      AlternateEmail String? 
      Feedback       String? 
      createdAt      DateTime @default(now()) 
-  
-     User   User   @relation(fields: [userId], references: [id]) 
+     
+     Student   User   @relation(fields: [userId], references: [id]) 
      userId String @db.ObjectId 
  } 
   
