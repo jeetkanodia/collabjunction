@@ -51,8 +51,8 @@ generator client {
      SocialHandles  String? 
      Name           String 
      Designation    String 
-     ContactNumber  String 
-     OfficialEmail  String 
+     ContactNumber  String @unique
+     OfficialEmail  String @unique
      AlternateEmail String? 
      Feedback       String? 
      createdAt      DateTime @default(now()) 
@@ -83,9 +83,9 @@ generator client {
      id             String   @id @default(auto()) @map("_id") @db.ObjectId 
      category       String 
      Name           String 
-     OfficialEmail  String 
+     OfficialEmail  String @unique
      AlternateEmail String? 
-     ContactNumber  String 
+     ContactNumber  String @unique
      SocialHandles  String? 
      Feedback       String? 
      createdAt      DateTime @default(now()) 
