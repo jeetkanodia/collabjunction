@@ -41,8 +41,8 @@ generator client {
   
      @@unique([provider, providerAccountId]) 
  } 
-  
- model Sponser { 
+ 
+ model Sponser {
      id             String   @id @default(auto()) @map("_id") @db.ObjectId 
      category       String 
      CompanyName    String 
